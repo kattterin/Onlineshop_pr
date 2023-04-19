@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+  <!-- Индикаторы -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel" data-slide-to="1"></li>
+    <li data-target="#carousel" data-slide-to="2"></li>
+  </ol>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="img-fluid" src="../static/img/fon3.jpg" alt="..." width="90%">
+      <div class="carousel-caption" style="left: 5%">
+            что 1
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img class="img-fluid" src="../static/img/fon3.jpg" alt="..." width="90%">
+      <div class="carousel-caption" style="left: 5%">
+            Что-то очень супер длинное даже не прочитать
+      </div>
+    </div>
+    <div class="carousel-item">
+        <img class="img-fluid" src="../static/img/fon3.jpg" alt="..." width="90%">
+      <div class="carousel-caption" style="left: 5%">
+        <a href="#">Что-то</a>
+      </div>
+    </div>
+  </div>
+  <!-- Элементы управления -->
+  <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Предыдущий</span>
+  </a>
+  <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Следующий</span>
+  </a>
+</div>
+
+<p></p>
+<div class="container">
+    <h1 class="h3 text-center my-4">Популярное</h1>
+    {% for i in '1234' %}
+    <div class="row">
+        {% for i in '1234' %}
+        <div class="col-lg-3 col-md-4 col-6 thumb">
+            <a data-fancybox="gallery" href="../static/img/fon3.jpg">
+              <img class="img-fluid" src="../static/img/fon3.jpg" alt="..." height="200" width="200">
+            </a>
+        </div>
+            {% endfor %}
+        <p></p>
+
+    </div>
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}
+
+<!--   <nav class="navbar navbar-light bg-light" role="navigation">-->
+<!--        <div class="container-fluid">-->
+<!--            <div class="navbar-header">-->
+<!--                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">-->
+<!--                    <span class="sr-only">Навигация</span>-->
+<!--                    <span class="icon-bar"></span>-->
+<!--                    <span class="icon-bar"></span>-->
+<!--                    <span class="icon-bar"></span>-->
+<!--                </button>-->
+<!--                <a class="navbar-brand" href="#">ITproger</a>-->
+<!--            </div>-->
+<!--            <div class="collapse navbar-collapse" id="#bs-example-navbar-collapse-1">-->
+<!--                <ul class="nav navbar-nav">-->
+<!--                    <li class="active"><a href="#">Ссылка</a></li>-->
+<!--                    <li><a href="#">Ссылка</a></li>-->
+<!--                    <li class="dropdown">-->
+<!--                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>-->
+<!--                        <ul class="dropdown-menu">-->
+<!--                        <li><a href="#">Действие 1</a></li>-->
+<!--                        <li><a href="#">Действие 2</a></li>-->
+<!--                        <li><a href="#">Действие 3</a></li>-->
+<!--                        <li class="devider"></li>-->
+<!--                        <li><a href="#">ОТДЕЛЬНАЯ ССЫЛКА</a></li>-->
+<!--                        <li class="devider"></li>-->
+<!--                        <li><a href="#">ОТДЕЛЬНАЯ ССЫЛКА 2</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--                <form class="navbar-form navbar-left" role="search">-->
+<!--                    <div class="form-group">-->
+<!--                        <input type="text" class="form-control" placeholder="Поиск">-->
+<!--                    </div>-->
+<!--                    <button type="submit" class="btn btn-default">Поиск</button>-->
+<!--                </form>-->
+<!--                <ul class="nav navbar-nav navbar-right">-->
+<!--                    <li><a href="#">Ссылка</a></li>-->
+<!--                    <li class="dropdown">-->
+<!--                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>-->
+<!--                        <ul class="dropdown-menu">-->
+<!--                        <li><a href="#">Действие 1</a></li>-->
+<!--                        <li><a href="#">Действие 2</a></li>-->
+<!--                        <li><a href="#">Действие 3</a></li>-->
+<!--                        <li class="devider"></li>-->
+<!--                        <li><a href="#">ОТДЕЛЬНАЯ ССЫЛКА</a></li>-->
+<!--                        </ul>-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+
+<!--&lt;!&ndash;            <a href="#" class="navbar-brad"><img src="../static/img/favicon.png"/></a>&ndash;&gt;-->
+<!--&lt;!&ndash;            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">&ndash;&gt;-->
+
+<!--&lt;!&ndash;            </button>&ndash;&gt;-->
+<!--        </div>-->
+<!--    </nav>-->

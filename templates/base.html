@@ -70,7 +70,8 @@
                 {% if current_user.is_authenticated %}
                 <li class="nav-item"><a href="/logout" class="nav-link">{{ current_user.name }}<span
                         class="fa fa-user"><i class="sr-only">Профиль</i></span></a></li>
-                <li class="nav-item"><a href="/basket" class="nav-link">Корзина</a></li>
+                <li class="nav-item"><a href="/basket" class="nav-link">Корзина<span
+                        class="fa fa-shopping-cart"><i class="sr-only">Корзина</i></span></a></li>
                 {% else %}
                 <li class="nav-item"><a href="/register" class="nav-link">Зарегистрироваться</a></li>
                 <li class="nav-item"><a href="/login" class="nav-link">Войти</a></li>

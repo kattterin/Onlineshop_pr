@@ -55,12 +55,12 @@ def show_goods():
                 all_product = all_product.intersection(set([j.id for j in i.goods]))
             all_product = list(all_product)
             if query:
-                goods = db_sess.query(Goods).filter(Goods.id.in_(all_product), Goods.title.like(f'%{query}%'))
+                goods = db_sess.query(Goods).filter(Goods.id.in_(all_product), Goods.title.ilike(f'%{query.lower()}%'))
             else:
                 goods = db_sess.query(Goods).filter(Goods.id.in_(all_product))
         else:
             if query:
-                goods = db_sess.query(Goods).filter(Goods.title.like(f'%{query}%'))
+                goods = db_sess.query(Goods).filter(Goods.title.ilike(f'%{query.lower()}%'))
             else:
                 goods = db_sess.query(Goods)
         prom_good = goods

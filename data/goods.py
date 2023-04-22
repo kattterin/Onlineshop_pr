@@ -14,9 +14,12 @@ class Goods(SqlAlchemyBase, SerializerMixin):
     title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     slug = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    image = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    image = sqlalchemy.Column(sqlalchemy.LargeBinary, nullable=True)
     price = sqlalchemy.Column(sqlalchemy.REAL, nullable=True)
     old_price = sqlalchemy.Column(sqlalchemy.REAL, nullable=True)
+    user_id = sqlalchemy.Column(sqlalchemy.Integer,
+                                sqlalchemy.ForeignKey("users.id"))
+    user = orm.relationship('User')
 
     categories = orm.relationship("Category",
                                   secondary="association",

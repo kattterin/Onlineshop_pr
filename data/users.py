@@ -31,3 +31,7 @@ class User(SqlAlchemyBase, UsersPassword, UserMixin, SerializerMixin):
                               index=True, unique=True, nullable=True)
     hashed_password = Column(sqlalchemy.String, nullable=True)
     basket = Column(JSON)
+    is_seller = sqlalchemy.Column(sqlalchemy.BOOLEAN, default=False)
+    is_admin = sqlalchemy.Column(sqlalchemy.BOOLEAN, default=False)
+
+    goods = orm.relationship("Goods", back_populates='user')

@@ -36,9 +36,14 @@
 <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
     <div class="container">
         <a class="navbar-brand" href="index.html">Something <span>shop</span></a>
-        <form action="#" class="searchform order-sm-start order-lg-last ">
+        <form action="/show_goods" name="query" class="searchform order-sm-start order-lg-last">
             <div class="form-group d-flex">
-                <input type="text" class="form-control pl-3" placeholder="Поиск">
+                {% if sear %}
+                    <input type="text" class="form-control pl-3" placeholder="Поиск" name="query" value="{{ sear }}">
+                {% else %}
+                    <input type="text" class="form-control pl-3" placeholder="Поиск" name="query">
+                {% endif %}
+
                 <button type="submit" placeholder="" class="form-control search"><span class="fa fa-search"></span>
                 </button>
             </div>
@@ -64,21 +69,23 @@
                 </li>
                 {% if current_user.is_authenticated %}
                 <li class="nav-item"><a href="/logout" class="nav-link">{{ current_user.name }}<span
-                                class="fa fa-user"><i class="sr-only">Профиль</i></span></a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Корзина</a></li>
-
+                        class="fa fa-user"><i class="sr-only">Профиль</i></span></a></li>
+                <li class="nav-item"><a href="/basket" class="nav-link">Корзина</a></li>
                 {% else %}
-                    <li class="nav-item"><a href="/register" class="nav-link">Зарегистрироваться</a></li>
-                    <li class="nav-item"><a href="/login" class="nav-link">Войти</a></li>
-
+                <li class="nav-item"><a href="/register" class="nav-link">Зарегистрироваться</a></li>
+                <li class="nav-item"><a href="/login" class="nav-link">Войти</a></li>
                 {% endif %}
                 <li class="nav-item"><a href="/show_goods" class="nav-link">Все товары</a></li>
+
+                {% if current_user.is_admin %}
+                <li class="nav-item"><a href="/all_users" class="nav-link">Пользователи</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 <!--body-->
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

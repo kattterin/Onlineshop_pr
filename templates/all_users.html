@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Имя</th>
+                <th>Электронная почта</th>
+                <th>Телефон</th>
+                <th>Продавец</th>
+
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><a href="/user_delete/{{ user.id }}" class="btn btn-danger">Удалить</a>  {{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.phone }}</td>
+                {% if user.is_seller %}
+                    <td>Продавец   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Лишить</a></td>
+                {% else %}
+                    <td>Покупатель   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Назначить</a></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

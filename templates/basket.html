@@ -1,5 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Привет</h1>
+<div class="col-sm-9">
+                {% for item in goods%}
+                <div class="col-sm-5 border rounded">
+                    <h2>{{item.title}}</h2>
+                    <div>
+                        {{item.content}}
+                    </div>
+                    <div>
+                        {% if current_user.is_authenticated %}
+                        <div>
+
+                            <a href="/good_delete_from_b/{{ item.id }}" class="btn btn-danger">
+                                Удалить
+
+                            </a>
+                        </div>
+                        {% endif %}
+                        Цена - {{item.price}}, Старая цена - {{item.old_price}}
+                        Категории:
+                        {% for item in item.categories %}
+                        {{ item.name }}
+                        {% endfor %}
+
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
 {% endblock %}

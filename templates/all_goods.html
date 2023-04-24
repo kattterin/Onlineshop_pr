@@ -1,15 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" name="mydropdown" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    Dropdown button
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="/drop_down">По убыванию цены</a>
-    <a class="dropdown-item" href="#">По возрастанию цены</a>
-  </div>
-</div><div class="container-fluid">
+<!--<div class="dropdown">-->
+<!--  <button class="btn btn-secondary dropdown-toggle" name="mydropdown" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+<!--    Dropdown button-->
+<!--  </button>-->
+<!--  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
+<!--    <a class="dropdown-item" href="/drop_down">По убыванию цены</a>-->
+<!--    <a class="dropdown-item" href="#">По возрастанию цены</a>-->
+<!--  </div>-->
+<script>var numCount = document.getElementById('num_count');
+var plusBtn = document.getElementById('button_plus');
+var minusBtn = document.getElementById('button_minus');
+plusBtn.onclick = function () {
+    var qty = parseInt(numCount.value);
+    qty = qty + 1;
+    numCount.value = qty;
+}
+minusBtn.onclick = function () {
+    var qty = parseInt(numCount.value);
+    qty = qty - 1;
+    numCount.value = qty;
+}</script>
+
+<div class="btn-group" role="group">
+    <!--    <a href="/sort_asc" class="btn btn-light my_border text-dark gx-5"><span class="fa Example of angle-double-up fa-angle-double-up"><i class="sr-only"></i></span></a>-->
+    <!--    <a href="/sort_desc" class="btn btn-light my_border text-dark gx-5"><span class="fa fa-angle-double-down"><i class="sr-only"></i></span></a>-->
+    <form method="post">
+        <button type="submit" class="btn btn-light" name="sort_asc"><span
+                class="fa Example of angle-double-up fa-angle-double-up"><i class="sr-only"></i></span></button>
+        <button type="submit" class="btn btn-light" name="sort_desc"><span class="fa fa-angle-double-down"><i
+                class="sr-only"></i></span></button>
+    </form>
+
+</div>
+<div class="container-fluid">
     <div class="row">
         <div class="col-sm-2">
             <ul class="list-group">
@@ -23,46 +48,71 @@
                     <label><input type="checkbox" name="mycheckboxes" value="{{ category }}"> {{ category }}</label><br>
                     {% endif %}
                     {% endfor %}
-                    <button type="submit" name="check_click">Submit</button>
+                    <button type="submit" name="check_click">Применить</button>
 
                 </form>
 
             </ul>
         </div>
-        <div class="col-sm-9">
-            {% for item in goods%}
-            <div class="col-sm-5 border rounded">
-                <h2>{{item.title}}</h2>
-                <div>
-                    {{item.content}}
-                </div>
-                <div>
-                    {% if current_user.is_authenticated and (current_user == item.user or current_user.is_admin) %}
-                    <div>
-                        {% if current_user == item.user %}
-                        <a href="/good/{{ item.id }}" class="btn btn-warning">
-                            Изменить
-                        </a>
-                        {% endif %}
+        <div class="col-sm-10">
+            <div class="row g-4">
+                {% for item in goods%}
 
-                        <a href="/good_delete/{{ item.id }}" class="btn btn-danger">
-                            Удалить
-                        </a>
+                <div class="col-sm-3">
+
+                    <div class="card text-dark border-dark border-3">
+                        <div class="ratio ratio-4x3">
+                            {% if item.image %}
+                            <img src="data:image/jpeg;base64,{{ item.image }}"/>
+                            {% else %}
+                            <img src="../static/img/no_image.png">
+                            {% endif %}
+                        </div>
+                        <hr style="border: 1px solid black">
+                        <div class="card-body">
+                            {% if item.discount > 5 %}
+                            <h5 class="card-title "><strong>{{item.title}} <span
+                                    class="border-2 bg_red text-white float-right"><i></i>-{{item.discount}}%</span></strong>
+                            </h5>
+                            {% else %}
+                            <h5 class="card-title"><strong>{{item.title}}</strong></h5>
+                            {% endif %}
+
+                            <p class="card-text text-truncate">{{item.content}}</p>
+                            {{item.price}}₽ <s class="text-secondary gx-5"> {{item.old_price}}₽ </s>
+
+                            <a href="/korzina/{{ item.id }}" class="btn my_btn my_border text-dark gx-5"><span
+                                    class="fa fa-shopping-cart"><i class="sr-only">Корзина</i></span></a>
+                                <div class="input-group quantity_goods">
+                                 <input type="number" step="1" min="1" max="10" id="num_count" name="quantity" value="1" title="Qty">
+                                 </div>
+                            {% if current_user.is_authenticated and (current_user == item.user or current_user.is_admin)
+                            %}
+                            <p></p>
+
+                            <div>
+                                {% if current_user == item.user %}
+                                <a href="/good/{{ item.id }}" class="btn my_bg_warn border-warning border-3 text-dark">
+                                    Изменить
+                                </a>
+                                {% endif %}
+
+                                <a href="/good_delete/{{ item.id }}"
+                                   class="btn my_bg_dang border-danger border-3 text-dark">
+                                    Удалить
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+
                     </div>
-                    {% endif %}
-                    <a href="/korzina/{{ item.id }}" class="btn btn-warning">
-                        Корзина
-                    </a>
-
-                    Цена - {{item.price}}, Старая цена - {{item.old_price}}
-                    Категории:
-                    {% for item in item.categories %}
-                    {{ item.name }}
-                    {% endfor %}
 
                 </div>
+
+                {% endfor %}
+
             </div>
-            {% endfor %}
+
         </div>
     </div>
 </div>

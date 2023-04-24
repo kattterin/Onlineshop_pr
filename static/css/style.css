@@ -4,6 +4,27 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+.card-img-top {
+  height: 50%;
+  border-top-left-radius: calc(0.25rem - 1px);
+  border-top-right-radius: calc(0.25rem - 1px); }
+
+.my_border {
+    border-color: #6c757d !important; }
+
+.my_btn {
+    background-color: #e0ca90 !important; }
+
+.my_bg_warn {
+    background-color: #ffd4b1 !important; }
+
+.my_bg_dang {
+    background-color: #ff9e81 !important; }
+
+.bg_red {
+    background-color: #dc3545 !important;
+  border-color: #343a40 !important;}
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -166,7 +187,7 @@ figure {
 
 img {
   vertical-align: middle;
-  border-style: none; }
+  border-style: none;}
 
 svg {
   overflow: hidden;
@@ -411,6 +432,7 @@ mark,
   margin-bottom: 0.5rem;
   line-height: 1; }
 
+
 .figure-caption {
   font-size: 90%;
   color: #6c757d; }
@@ -479,7 +501,7 @@ pre {
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   margin-right: -15px;
-  margin-left: -15px; }
+  margin-left: -15px;}
 
 .no-gutters {
   margin-right: 0;
@@ -7919,7 +7941,8 @@ button.bg-dark:focus {
   overflow: hidden;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  white-space: nowrap; }
+  white-space: nowrap;
+  line-height: 1.2em;}
 
 .text-left {
   text-align: left !important; }

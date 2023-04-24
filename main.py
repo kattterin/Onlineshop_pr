@@ -1,23 +1,34 @@
 import os
 import json
-from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for
+from flask import Flask, render_template, redirect, request, make_response, session, abort, jsonify, url_for, flash, \
+    send_file, Response
 from data import db_session
 from data.users import User
 from data.goods import Goods
 from data.category import Category
-from data.brand import Brand
-from wtforms import SubmitField
+from io import BytesIO
+from base64 import b64encode
 from forms.loginform import LoginForm
 from forms.user import RegisterForm
 from forms.goodsform import GoodForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
+from sqlalchemy import asc, desc
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(32)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+def image_to_html(img):
+    a = BytesIO(img.read())
+    img_data = a.getvalue()
+    img_base64 = b64encode(img_data).decode('utf-8')
+    return img_base64
 
 
 @login_manager.user_loader
@@ -32,15 +43,17 @@ def index():
     return render_template("index.html", title="Главная")
 
 
-@app.route('/drop_down1', methods=['GET', 'POST'])
-def drop_down():
-    sime = ['df', 'efew']
-    return redirect(url_for('show_goods', sime=sime))
+# @app.route('/drop_down1', methods=['GET', 'POST'])
+# def drop_down():
+#     sime = ['df', 'efew']
+#     return redirect(url_for('show_goods', sime=sime))
 
 
 @app.route("/show_goods", methods=['GET', 'POST'])
 def show_goods():
     global prom_good, prom_query, prom_mycheckboxes
+
+    # sort_btn = request.files['sort_desc'] if request.files.get('sort_desc') else request.files['sort_asc']
     db_sess = db_session.create_session()
     categories = {i.name: i.id for i in db_sess.query(Category)}  # список категорий
     button_pressed = 'check_click' in request.form
@@ -63,12 +76,25 @@ def show_goods():
                 goods = db_sess.query(Goods).filter(Goods.title.ilike(f'%{query.lower()}%'))
             else:
                 goods = db_sess.query(Goods)
+        if 'sort_asc' in request.form:
+            goods = goods.order_by(Goods.price.asc())
+        elif 'sort_desc' in request.form:
+            goods = goods.order_by(Goods.price.desc())
+
         prom_good = goods
         prom_query = query
         prom_mycheckboxes = mycheckboxes
         return render_template("all_goods.html", title="Товары", goods=goods, categories=categories.keys(),
                                mycheckboxes=mycheckboxes, sear=query)
     else:
+        if 'sort_asc' in request.form:
+            return render_template("all_goods.html", title="Товары", goods=prom_good.order_by(Goods.price.asc()),
+                                   categories=categories.keys(),
+                                   mycheckboxes=prom_mycheckboxes, sear=prom_query)
+        elif 'sort_desc' in request.form:
+            return render_template("all_goods.html", title="Товары", goods=prom_good.order_by(Goods.price.desc()),
+                                   categories=categories.keys(),
+                                   mycheckboxes=prom_mycheckboxes, sear=prom_query)
         return render_template("all_goods.html", title="Товары", goods=prom_good, categories=categories.keys(),
                                mycheckboxes=prom_mycheckboxes, sear=prom_query)
 
@@ -108,6 +134,10 @@ def register():
             return render_template('register.html', title='Регистрация',
                                    form=form,
                                    message="Такой пользователь уже есть")
+        if db_sess.query(User).filter(User.phone == form.phone.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Данный номер уже зарегистрирован")
         user = User(
             name=form.name.data,
             email=form.email.data,
@@ -126,22 +156,20 @@ def new_good():
     form = GoodForm()
     db_sess = db_session.create_session()
     categories = db_sess.query(Category).all()
-    brandies = db_sess.query(Brand).all()
-
     form.category.choices = [(i.id, i.name) for i in categories]
-    form.brand.choices = [(i.id, i.name) for i in brandies]
-
+    image = image_to_html(request.files['img']) if request.files.get('img') else ''
     if form.validate_on_submit():
         # file = request.files['image']
         goods = Goods()
         goods.title = form.title.data
         goods.content = form.content.data
         # goods.is_private = form.is_private.data
-        goods.slug = form.slug.data
-        goods.price = float(form.price.data)
-        goods.old_price = float(form.old_price.data)
+        goods.price = form.price.data
+        goods.old_price = form.old_price.data
         goods.categories.extend(db_sess.query(Category).filter(Category.id.in_(form.category.data)).all())
-        goods.brandies.append(db_sess.query(Brand)[form.brand.data])
+        goods.discount = int(-1 * ((int(form.price.data) / int(form.old_price.data)) * 100 - 100))
+        if image:
+            goods.image = image
         # if file:
         #     filename = file.filename
         #     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
@@ -155,9 +183,8 @@ def new_good():
 
         db_sess.commit()
         return redirect('/show_goods')
-
     return render_template('good.html', title='Добавление новости',
-                           form=form)
+                           form=form, image=image)
 
 
 @app.route('/good_delete/<int:id>', methods=['GET', 'POST'])
@@ -173,48 +200,50 @@ def good_delete(id):
     return redirect('/show_goods')
 
 
-@app.route('/good/<int:id>', methods=['GET', 'POST'])
+@app.route('/good/<int:id_>', methods=['GET', 'POST'])
 @login_required
-def edit_good(id):
+def edit_good(id_):
     form = GoodForm()
     db_sess = db_session.create_session()
     categories = db_sess.query(Category).all()
-    brandies = db_sess.query(Brand).all()
     form.category.choices = [(i.id, i.name) for i in categories]
-    form.brand.choices = [(i.id, i.name) for i in brandies]
+    image = ''
+    if request.files.get('img'):
+        image = image_to_html(request.files['img'])
     if request.method == "GET":
-        goods = db_sess.query(Goods).filter(Goods.id == id).first()
+        goods = db_sess.query(Goods).filter(Goods.id == id_).first()
         if goods:
 
             form.title.data = goods.title
             form.content.data = goods.content
-            form.slug.data = goods.slug
             form.price.data = goods.price
             form.old_price.data = goods.old_price
             form.category.data = [i.id for i in goods.categories]
-            form.brand.data = [i.id for i in goods.brandies][0] if [i.id for i in goods.brandies] else None
+            image = goods.image
         else:
             abort(404)
     if form.validate_on_submit():
-        goods = db_sess.query(Goods).filter(Goods.id == id).first()
+        goods = db_sess.query(Goods).filter(Goods.id == id_).first()
         if goods:
             goods.title = form.title.data
             goods.content = form.content.data
-            goods.slug = form.slug.data
-            goods.price = float(form.price.data)
-            goods.old_price = float(form.old_price.data)
+            goods.price = int(form.price.data)
+            goods.discount = int(-1 * ((int(form.price.data) / int(form.old_price.data)) * 100 - 100))
+            goods.old_price = int(form.old_price.data)
             goods.categories = []
             goods.categories.extend(db_sess.query(Category).filter(Category.id.in_(form.category.data)).all())
-            goods.brandies = []
-            print(form.brand.data)
-            goods.brandies.append(db_sess.query(Brand)[form.brand.data])
+
+            if image:
+                goods.image = image
             db_sess.commit()
             return redirect('/show_goods')
         else:
             abort(404)
+
+    # return f'<img src="data:image/jpeg;base64,{data}" alt="{image.name}">'
     return render_template('good.html',
                            title='Редактирование товара',
-                           form=form
+                           form=form, image=image
                            )
 
 
@@ -235,7 +264,6 @@ def basket():
 @login_required
 def korzina(id_):
     db_sess = db_session.create_session()
-    categories = [i.name for i in db_sess.query(Category)]
     # получение объекта модели для изменения
     user = db_sess.query(User).filter(User.email == current_user.email).first()
     korzina = json.loads(user.basket) if user.basket else {}

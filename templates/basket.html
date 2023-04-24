@@ -23,6 +23,12 @@
                         {% for item in item.categories %}
                         {{ item.name }}
                         {% endfor %}
+                        {% if item.image %}
+                            <p>
+                                <img width="90%" src="data:image/jpeg;base64,{{ item.image }}"/>
+                            </p>
+
+                    {% endif %}
 
                     </div>
                 </div>

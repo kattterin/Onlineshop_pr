@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Добавление товара</h1>
-<form action="" method="post">
+<form action="" method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
         {{ form.title.label }}<br>
@@ -14,15 +14,6 @@
     {% endfor %}
     </p>
 
-        <p>
-        {{ form.slug.label }}<br>
-        {{ form.slug(class="form-control") }}<br>
-        {% for error in form.slug.errors %}
-    <p class="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
-    </p>
 
     <p>
         {{ form.content.label }}<br>
@@ -44,18 +35,7 @@
     {% endfor %}
     </p>
 
-
-       <p>
-        {{ form.brand.label }}<br>
-        {{ form.brand(class="form-control") }}<br>
-        {% for error in form.brand.errors %}
-    <p content="alert alert-danger" role="alert">
-        {{ error }}
-    </p>
-    {% endfor %}
-    </p>
-
-       <p>
+    <p>
         {{ form.price.label }}<br>
         {{ form.price(class="form-control") }}<br>
         {% for error in form.price.errors %}
@@ -74,7 +54,21 @@
     </p>
     {% endfor %}
     </p>
+<!---->
+    <p>
+        <div class="form-group">
+            <label for="photo">Загрузите фотографию</label>
+    <input type="file" class="form-control-file" id="photo" name="img">
+        </div>
+    </p>
 
+   {% if image %}
+        <p>
+            <img width="400" src="data:image/jpeg;base64,{{ image }}"/>
+        </p>
+     {% endif %}
+
+<!--    <img src="data:image/jpeg;base64,{data}" alt="{image.name}">-->
 
     <p>{{ form.submit(type="submit", class="btn btn-primary") }}</p>
     {{message}}

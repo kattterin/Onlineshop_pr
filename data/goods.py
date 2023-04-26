@@ -11,13 +11,13 @@ class Goods(SqlAlchemyBase, SerializerMixin):
 
     id = sqlalchemy.Column(sqlalchemy.Integer,
                            primary_key=True, autoincrement=True)
-    title = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    title = sqlalchemy.Column(sqlalchemy.String, nullable=False)
     content = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     image = sqlalchemy.Column(sqlalchemy.String)
     price = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     old_price = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
     discount = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
-    in_stock = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    in_stock = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
 
     user_id = sqlalchemy.Column(sqlalchemy.Integer,
                                 sqlalchemy.ForeignKey("users.id"))

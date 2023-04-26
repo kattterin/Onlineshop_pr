@@ -1,35 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!--<div class="dropdown">-->
-<!--  <button class="btn btn-secondary dropdown-toggle" name="mydropdown" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
-<!--    Dropdown button-->
-<!--  </button>-->
-<!--  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">-->
-<!--    <a class="dropdown-item" href="/drop_down">По убыванию цены</a>-->
-<!--    <a class="dropdown-item" href="#">По возрастанию цены</a>-->
-<!--  </div>-->
-<script>var numCount = document.getElementById('num_count');
-var plusBtn = document.getElementById('button_plus');
-var minusBtn = document.getElementById('button_minus');
-plusBtn.onclick = function () {
-    var qty = parseInt(numCount.value);
-    qty = qty + 1;
-    numCount.value = qty;
-}
-minusBtn.onclick = function () {
-    var qty = parseInt(numCount.value);
-    qty = qty - 1;
-    numCount.value = qty;
-}</script>
-
 <div class="btn-group" role="group">
     <!--    <a href="/sort_asc" class="btn btn-light my_border text-dark gx-5"><span class="fa Example of angle-double-up fa-angle-double-up"><i class="sr-only"></i></span></a>-->
     <!--    <a href="/sort_desc" class="btn btn-light my_border text-dark gx-5"><span class="fa fa-angle-double-down"><i class="sr-only"></i></span></a>-->
     <form method="post">
-        <button type="submit" class="btn btn-light" name="sort_asc"><span
+        <button type="submit" class="btn btn-light border-3 text-dark border-dark" name="sort_asc"><span
                 class="fa Example of angle-double-up fa-angle-double-up"><i class="sr-only"></i></span></button>
-        <button type="submit" class="btn btn-light" name="sort_desc"><span class="fa fa-angle-double-down"><i
+        <button type="submit" class="btn btn-light border-3 text-dark border-dark" name="sort_desc"><span
+                class="fa fa-angle-double-down"><i
                 class="sr-only"></i></span></button>
     </form>
 
@@ -40,21 +19,102 @@ minusBtn.onclick = function () {
             <ul class="list-group">
                 <form method="POST">
                     {% for category in categories %}
-                    {% if category in mycheckboxes %}
-                    <label><input type="checkbox" name="mycheckboxes" value="{{ category }}" checked> {{ category
+                    {% if category.name in mycheckboxes %}
+                    <label class='border-1 text-dark bg-light border-dark'><input type="checkbox" name="mycheckboxes"
+                                                                                  class='text-dark bg-light'
+                                                                                  value="{{ category.name }}" checked>
+                        {{ category.name
                         }}</label><br>
 
                     {% else %}
-                    <label><input type="checkbox" name="mycheckboxes" value="{{ category }}"> {{ category }}</label><br>
+                    <label class='border-1 text-dark bg-light border-dark'><input type="checkbox"
+                                                                                  class='border-1 text-dark bg-light border-dark'
+                                                                                  name="mycheckboxes"
+                                                                                  value="{{ category.name }}"> {{
+                        category.name
+                        }}</label><br>
                     {% endif %}
                     {% endfor %}
-                    <button type="submit" name="check_click">Применить</button>
-
+                    <button type="submit" class='border-3 text-dark border-dark' name="check_click">Применить</button>
+                    <div class="btn-group" role="group">
+                        <!--    <a href="/sort_asc" class="btn btn-light my_border text-dark gx-5"><span class="fa Example of angle-double-up fa-angle-double-up"><i class="sr-only"></i></span></a>-->
+                        <!--    <a href="/sort_desc" class="btn btn-light my_border text-dark gx-5"><span class="fa fa-angle-double-down"><i class="sr-only"></i></span></a>-->
+                        <form method="post">
+                            <button type="submit" class="btn btn-light border-3 text-dark border-dark" name="bars"><span
+                                    class="fa fa-bars"><i class="sr-only"></i></span></button>
+                            <button type="submit" class="btn btn-light border-3 text-dark border-dark"
+                                    name="ellipsis"><span
+                                    class="fa fa-ellipsis-h"><i
+                                    class="sr-only"></i></span></button>
+                        </form>
+                    </div>
                 </form>
+                {% if current_user.is_authenticated and (current_user.is_seller or
+                current_user.is_admin)%}
+                <p></p>
+                <p>
+                    <button type="button" class="col-sm-10 btn btn-light border-3 text-dark border-dark"
+                            data-toggle="modal" data-target="#myModal">
+                        Редактор категорий
+                    </button>
+                    <a href="/good" class="btn btn-light border-3 text-dark border-dark">Добавить товар</a>
+                </p>
+                {% endif %}
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title border-3 text-dark border-dark" id="myModalLabel">Редактирование
+                                    категорий</h4>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                                <ul class="list-group list-group-flush gy-1">
+                                    {% for category in categories%}
+                                    {% if current_user.is_authenticated and (current_user.id == category.user_id or
+                                    current_user.is_admin) %}
+                                    <p>
+                                    <div>
+                                        <li class="list-group-item">{{category.name}}
+                                            <a href="/cat_del/{{ category.id }}"
+                                               class="btn my_bg_dang border-danger border-3 text-dark"><span
+                                                    class="fa fa-trash"><i class="sr-only"></i></span>
+                                            </a>
+                                        </li>
+                                    </div>
+                                    {% else %}
+                                    <li class="list-group-item">{{category.name}}</li>
+                                    {% endif %}
+                                    </p>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="modal-footer">
+                                <div class="input-group mb-3">
+                                    <form id="modal-form" action="/somenew" method="post">
+                                        <div class="form-group">
+                                            <label>Название категории:</label>
+                                            <input type="text" class="form-control" name="cat_name"
+                                                   placeholder="новая категория">
+                                        </div>
+                                        <button type="submit" class="btn border-3 text-dark border-dark">Добавить
+                                        </button>
+                                    </form>
+
+                                </div>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
             </ul>
         </div>
         <div class="col-sm-10">
+            {% if sort_ %}
             <div class="row g-4">
                 {% for item in goods%}
 
@@ -79,13 +139,57 @@ minusBtn.onclick = function () {
                             {% endif %}
 
                             <p class="card-text text-truncate">{{item.content}}</p>
+                            {% if item.price == item.old_price %}
+                            {{item.price}}₽
+                            {% else %}
                             {{item.price}}₽ <s class="text-secondary gx-5"> {{item.old_price}}₽ </s>
-
+                            {% endif %}
+                            {% if item.in_stock > 0 %}
+                            {% if item.id in users_cart.keys() and item.in_stock > 0 %}
+                            <form action="/update_quantity/{{ item.id }}" method="POST">
+                                <input type="number" step="1" min="1" max="{{ item.in_stock }}" id="num_count"
+                                       name="quantity" value={{users_cart.get(item.id)}} title="Qty">
+                                <button type="submit">Сохранить</button>
+                            </form>
+                            {% else %}
+                            {% if current_user.is_authenticated %}
                             <a href="/korzina/{{ item.id }}" class="btn my_btn my_border text-dark gx-5"><span
                                     class="fa fa-shopping-cart"><i class="sr-only">Корзина</i></span></a>
-                                <div class="input-group quantity_goods">
-                                 <input type="number" step="1" min="1" max="10" id="num_count" name="quantity" value="1" title="Qty">
-                                 </div>
+                            {% else %}
+                            <button type="button" class="btn my_btn my_border text-dark gx-5"
+                                    data-toggle="modal" data-target="#exampleModal"><span class="fa fa-shopping-cart"><i
+                                    class="sr-only">Корзина</i></span></button>
+
+
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Авторизуйтесь или зарегистрируйтесь, чтобы добавить товар в корзину
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="/register"
+                                               class="btn btn-light border-3 text-dark border-dark">Регистрация</a>
+                                            <a href="/login"
+                                               class="btn btn-light border-3 text-dark border-dark">Авторизация</a>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            {% else %}
+                            Товара нет в наличии
+                            {% endif %}
                             {% if current_user.is_authenticated and (current_user == item.user or current_user.is_admin)
                             %}
                             <p></p>
@@ -112,12 +216,118 @@ minusBtn.onclick = function () {
                 {% endfor %}
 
             </div>
+            {% else %}
+            {% for item in goods%}
+
+            <div class="card mb-3 card text-dark border-dark border-3">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <div class="ratio ratio-4x3">
+                            {% if item.image %}
+                            <img src="data:image/jpeg;base64,{{ item.image }}"/>
+                            {% else %}
+                            <img src="../static/img/no_image.png">
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            {% if item.discount > 5 %}
+                            <h5 class="card-title "><strong>{{item.title}} <span
+                                    class="border-2 bg_red text-white float-right"><i></i>-{{item.discount}}%</span></strong>
+                            </h5>
+                            {% else %}
+                            <h5 class="card-title"><strong>{{item.title}}</strong></h5>
+                            {% endif %}
+
+                            <p class="card-text">{{item.content}}</p>
+                            <p class="card-text">{{item.price}}₽ <s class="text-secondary gx-5">
+                                {{item.old_price}}₽ </s>
+                                {% if item.id in users_cart.keys() and item.in_stock > 0 %}
+                            <form action="/update_quantity/{{ item.id }}" method="POST">
+                                <input type="number" step="1" min="1" max="{{ item.in_stock }}" id="num_count"
+                                       name="quantity" value={{users_cart.get(item.id)}} title="Qty">
+                                <button type="submit">Сохранить</button>
+                            </form>
+                            {% else %}
+                            {% if current_user.is_authenticated %}
+                            <a href="/korzina/{{ item.id }}" class="btn my_btn my_border text-dark gx-5"><span
+                                    class="fa fa-shopping-cart"><i class="sr-only">Корзина</i></span></a>
+                            {% else %}
+                            <button type="button" class="btn my_btn my_border text-dark gx-5"
+                                    data-toggle="modal" data-target="#exampleModal2"><span class="fa fa-shopping-cart"><i
+                                    class="sr-only">Корзина</i></span></button>
+
+                                                        <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel"></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Авторизуйтесь или зарегистрируйтесь, чтобы добавить товар в корзину
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="/register"
+                                               class="btn btn-light border-3 text-dark border-dark">Регистрация</a>
+                                            <a href="/login"
+                                               class="btn btn-light border-3 text-dark border-dark">Авторизация</a>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                            </p>
+                            <p class="card-text">
+                                {% if current_user.is_authenticated and (current_user == item.user or
+                                current_user.is_admin)
+                                %}
+                            <p></p>
+
+                            <div>
+                                {% if current_user == item.user %}
+                                <a href="/good/{{ item.id }}" class="btn my_bg_warn border-warning border-3 text-dark">
+                                    Изменить
+                                </a>
+                                {% endif %}
+
+                                <a href="/good_delete/{{ item.id }}"
+                                   class="btn my_bg_dang border-danger border-3 text-dark">
+                                    Удалить
+                                </a>
+                            </div>
+                            {% endif %}
+                            </p>
+                            <p class="card-text">
+                            <ul class="list-group list-group-horizontal-md">
+                                {% for items in item.categories %}
+                                <li class="list-group-item">{{ items.name }}</li>
+                                {% endfor %}
+
+                            </ul>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% endif %}
+
 
         </div>
     </div>
 </div>
+
 <br>
-{% if current_user.is_authenticated and current_user.is_seller %}
-<a href="good" class="btn btn-secondary">Добавить товар</a>
-{% endif %}
+
 {% endblock %}

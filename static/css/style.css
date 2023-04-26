@@ -9,6 +9,11 @@
   border-top-left-radius: calc(0.25rem - 1px);
   border-top-right-radius: calc(0.25rem - 1px); }
 
+.vl {
+    border-left: 3px solid black;
+    height: 200px;
+}
+
 .my_border {
     border-color: #6c757d !important; }
 
@@ -4755,9 +4760,9 @@ a.close.disabled {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  max-height: calc(100% - 1rem); }
+  max-height: calc(100% - 40%); }
   .modal-dialog-scrollable .modal-content {
-    max-height: calc(100vh - 1rem);
+    max-height: calc(100vh - 40rem);
     overflow: hidden; }
   .modal-dialog-scrollable .modal-header,
   .modal-dialog-scrollable .modal-footer {

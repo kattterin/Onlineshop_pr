@@ -30,7 +30,7 @@ class User(SqlAlchemyBase, UsersPassword, UserMixin, SerializerMixin):
     phone = Column(sqlalchemy.String,
                               index=True, unique=True, nullable=True)
     hashed_password = Column(sqlalchemy.String, nullable=True)
-    basket = Column(JSON)
+    # basket = Column(JSON)
     is_seller = sqlalchemy.Column(sqlalchemy.BOOLEAN, default=False)
     is_admin = sqlalchemy.Column(sqlalchemy.BOOLEAN, default=False)
 

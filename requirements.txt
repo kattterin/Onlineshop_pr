@@ -4,3 +4,4 @@ flask
 flask-login
 SQLAlchemy-serializer
 flask_restful
+requests

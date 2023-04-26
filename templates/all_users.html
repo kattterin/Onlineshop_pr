@@ -8,7 +8,7 @@
                 <th>Имя</th>
                 <th>Электронная почта</th>
                 <th>Телефон</th>
-                <th>Продавец</th>
+                <th>Покупатель/продавец</th>
 
 
             </tr>
@@ -20,9 +20,9 @@
                 <td>{{ user.email }}</td>
                 <td>{{ user.phone }}</td>
                 {% if user.is_seller %}
-                    <td>Продавец   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Лишить</a></td>
+                    <td>Продавец   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Изменить</a></td>
                 {% else %}
-                    <td>Покупатель   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Назначить</a></td>
+                    <td>Покупатель   <a href="/user_change/{{ user.id }}" class="btn btn-danger">Изменить</a></td>
                 {% endif %}
             </tr>
             {% endfor %}

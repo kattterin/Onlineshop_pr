@@ -12,6 +12,7 @@ class GoodForm(FlaskForm):
     # is_private = BooleanField("Личное")
     category = SelectMultipleField("Категории", coerce=int, validators=[DataRequired()])
     price = IntegerField("Цена")
+    in_stock = IntegerField('Количество товара')
     old_price = IntegerField("Старая цена")
     submit = SubmitField('Применить')
 

@@ -1,37 +1,85 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="col-sm-9">
-                {% for item in goods%}
-                <div class="col-sm-5 border rounded">
-                    <h2>{{item.title}}</h2>
-                    <div>
-                        {{item.content}}
-                    </div>
-                    <div>
-                        {% if current_user.is_authenticated %}
-                        <div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-9">
+            {% for item in goods%}
 
-                            <a href="/good_delete_from_b/{{ item.id }}" class="btn btn-danger">
-                                Удалить
-
-                            </a>
+            <div class="card mb-3 card text-dark border-dark border-3">
+                <div class="row no-gutters">
+                    <div class="col-md-4">
+                        <div class="ratio ratio-4x3">
+                            {% if item.image %}
+                            <img src="data:image/jpeg;base64,{{ item.image }}"/>
+                            {% else %}
+                            <img src="../static/img/no_image.png">
+                            {% endif %}
                         </div>
-                        {% endif %}
-                        Цена - {{item.price}}, Старая цена - {{item.old_price}}
-                        Категории:
-                        {% for item in item.categories %}
-                        {{ item.name }}
-                        {% endfor %}
-                        {% if item.image %}
-                            <p>
-                                <img width="90%" src="data:image/jpeg;base64,{{ item.image }}"/>
+
+                    </div>
+
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            {% if item.discount > 5 %}
+                            <h5 class="card-title "><strong>{{item.title}} <span
+                                    class="border-2 bg_red text-white float-right"><i></i>-{{item.discount}}%</span></strong>
+                            </h5>
+                            {% else %}
+                            <h5 class="card-title"><strong>{{item.title}}</strong></h5>
+                            {% endif %}
+
+                            <p class="card-text">{{item.content}}</p>
+                            <p class="card-text">{{item.price}}₽ <s class="text-secondary gx-5">
+                                {{item.old_price}}₽ </s>
+                                {% if item.in_stock > 0 %}
+                            <form action="/update_quantity/{{ item.id }}" method="POST">
+                                <input type="number" step="1" min="1" max="{{ item.in_stock }}" id="num_count"
+                                       name="quantity" value={{users_cart.get(item.id)[0]}} title="Qty">
+                                <button type="submit">Сохранить</button>
+                            </form>
+                            Итого: {{users_cart.get(item.id)[1]}}₽
+                            {% else %}
+                            <p>товара нет в наличии</p>
+                            {% endif %}
                             </p>
+                            <p class="card-text">
+                                {% if current_user.is_authenticated %}
+                            <div>
 
-                    {% endif %}
+                                <a href="/good_delete_from_b/{{ item.id }}"
+                                   class="btn my_bg_dang border-danger border-3 text-dark">
+                                    Удалить
 
+                                </a>
+                            </div>
+                            {% endif %}
+                            </p>
+                            <p class="card-text">
+                            <ul class="list-group list-group-horizontal-md">
+                                {% for items in item.categories %}
+                                <li class="list-group-item">{{ items.name }}</li>
+                                {% endfor %}
+
+                            </ul>
+                            </p>
+                        </div>
                     </div>
                 </div>
-            {% endfor %}
             </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-3">
+            <h1>Всего: {{all_total}}₽</h1>
+            <form method="post" action="/oplata/{{ all_total }}">
+                <button type="submit" class="btn btn-light border-3 text-dark border-dark col-sm-10"
+                        style="height: 100px" name="oplata">Оплатить
+                </button>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}

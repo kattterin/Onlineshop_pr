@@ -16,8 +16,6 @@ from forms.loginform import LoginForm
 from forms.user import RegisterForm
 from forms.goodsform import GoodForm
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from werkzeug.utils import secure_filename
-from sqlalchemy import asc, desc
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
